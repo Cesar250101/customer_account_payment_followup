@@ -4,13 +4,9 @@
 		<template id="bi_report_overdue_report">
 			<t t-call="web.external_layout">
 				<!-- <t t-set="doc" t-value="doc.with_context({'lang':doc.lang})" /> -->
+                <t t-set="fecha_actual" t-value="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/>                           
 				<div class="text-right" style="margin-right: 15em;">
 							<p><span t-esc="doc.name" /><br/>
-
-							
-
-						
-						
 							<span t-esc="doc.street" /><br/>
 							<span t-esc="doc.street2" /><br/>
 							<span t-esc="doc.city" />
@@ -22,8 +18,9 @@
 					</div>
 					<div class="page">
 						<div class="text-left">
+                        
 							<span>Customer account statement</span><br/>
-							<span>Date : </span><span t-esc="doc.today_date" /><br/>
+							<span>Date : </span><span t-esc="fecha_actual" /><br/>
 							<br/>
 							<span>Dear Sir/Madam,</span><br/>
 							<br/>
@@ -49,7 +46,7 @@
                         <t t-set="total" t-value="0"/>
                         <tr t-foreach="doc.invoice_ids" t-as="line">
                             <t t-if="line">
-                                <!--<t t-if="doc.today_date > line.date_due  ">-->
+                                <t t-if="fecha_actual > str(line.date_due)  ">
                             	    <t t-if="line.state !='paid' ">                            
                                         <td>
                                             <span t-esc="line.number"/>
@@ -76,7 +73,7 @@
                                         <t t-set="paid_total" t-value="paid_total + line.credit_amount_over"/>
                                         <t t-set="total" t-value="total + line.result_over"/>
                                     </t>
-                                <!--</t>-->
+                                </t>
                             </t>
                         </tr>
                         <tr>
