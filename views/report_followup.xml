@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<template id="report_followup">
+    <t t-call="web.html_container">
+        
+        
+<!--            <t t-esc="setLang(o.partner_id.lang)"/-->
+            <t t-call="web.external_layout">
+                <div class="row">
+                </div>
+                <t t-foreach="ids_to_objects" t-as="o">
+                <div class="page">
+                    <div class="row">
+                        <div class="col-xs-5 col-xs-offset-7">
+                            <div t-field="o.invoice_partner_id"
+                                t-field-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax"], "no_marker": true}'/>
+                             <span t-field="o.partner_id.vat"/>
+                        </div>
+                    </div>
+
+                    <p>
+                        Document: Customer account statement<br/>
+                        Date: <span t-esc="date"/><br/>
+                        Customer ref: <span t-field="o.partner_id.ref"/>
+                    </p>
+
+                    <p t-raw="get_text[o].replace('\n', '&lt;br&gt;')"/>
+                    <t t-foreach="getLines[o]" t-as="cur_lines">
+                        
+                        <table class="table table-condensed" style="margin-top: 50px;">
+                            <thead>
+                                <tr>
+                                    <th>Invoice Date</th>
+                                    <th>Description</th>
+                                    <th class="text-center">Ref</th>
+                                    <th class="text-center">Maturity Date</th>
+                                    <th class="text-right">Amount</th>
+                                    <th class="text-center">Li.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="cur_lines['line']" t-as="line">
+                                    <td><span t-esc="line['date']"/></td>
+                                    <td><span t-esc="line['name']"/></td>
+                                    <td><span t-esc="line['ref']"/></td>
+                                    <td class="text-center"><span t-esc="line['date_maturity']"/></td>
+                                    <td class="text-right"><span t-esc="line['balance']"/></td>
+                                    <td><span t-esc="line['blocked'] and 'X' or ''"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <t t-set="total" t-value="functools.reduce(lambda x,y: x+y['balance'], cur_lines['line'], 0.00)"/>
+                        <p>Total: <span t-esc="total" t-options="{'widget': 'monetary', 'display_currency': cur_lines['currency']}"/></p>
+                    </t>
+            </div>
+            </t>
+        </t>
+    </t>
+
+</template>
+
+</odoo>

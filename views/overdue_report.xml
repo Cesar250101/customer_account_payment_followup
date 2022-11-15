@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<template id="bi_report_overdue_report">
+			<t t-call="web.external_layout">
+				<!-- <t t-set="doc" t-value="doc.with_context({'lang':doc.lang})" /> -->
+				<div class="text-right" style="margin-right: 15em;">
+							<p><span t-esc="doc.name" /><br/>
+
+							
+
+						
+						
+							<span t-esc="doc.street" /><br/>
+							<span t-esc="doc.street2" /><br/>
+							<span t-esc="doc.city" />
+							<span t-esc="doc.state_id.name" />
+							<span t-esc="doc.zip" /><br/>
+							<span t-esc="doc.country_id.name" />
+						</p>
+						<br/>
+					</div>
+					<div class="page">
+						<div class="text-left">
+							<span>Customer account statement</span><br/>
+							<span>Date : </span><span t-esc="doc.today_date" /><br/>
+							<br/>
+							<span>Dear Sir/Madam,</span><br/>
+							<br/>
+							<span>Some payments on your account are still due. Please find details below.</span><br/>
+							<br/>
+							<span>Thank you.</span><br/>
+							<span>Best Regards,</span><br/>
+						</div>
+						<t t-if="doc.unreconciled_aml_ids.ids">
+                    <table class="table table-condensed" >
+                        <thead>
+                            <tr>
+                                <th>Reference number</th>
+                                <th class="text-center">Date</th>
+                                <th class="text-center">Due Date</th>
+                                <th class="text-right">Total</th>
+                                <th class="text-right">Due</th>
+                                <th class="text-right">Paid</th>
+                            </tr>
+                        </thead>
+                        <t t-set="due_total" t-value="0"/>
+                        <t t-set="paid_total" t-value="0"/>
+                        <t t-set="total" t-value="0"/>
+                        <tr t-foreach="doc.invoice_ids" t-as="line">
+                            <t t-if="line">
+                                <!--<t t-if="doc.today_date > line.date_due  ">-->
+                            	    <t t-if="line.state !='paid' ">                            
+                                        <td>
+                                            <span t-esc="line.number"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="doc.today_date"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="line.date_due"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <!-- <span t-esc="line.amount_total"/> -->
+                                            <span t-esc="'{0:,.0f}'.format(int(line.amount_total))"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <!-- <span t-esc="'%.0f'% line.result_over"/>                  -->
+                                            <span t-esc="'{0:,.0f}'.format(int(line.result_over))"/>                       
+                                        </td>                                        
+                                        <td class="text-right">
+                                            <!-- <span t-esc="'%.0f'% line.credit_amount_over"/> -->
+                                            <span t-esc="'{0:,.0f}'.format(int(line.credit_amount_over))"/>
+                                        </td>
+                                        <t t-set="due_total" t-value="due_total + line.amount_total"/>
+                                        <t t-set="paid_total" t-value="paid_total + line.credit_amount_over"/>
+                                        <t t-set="total" t-value="total + line.result_over"/>
+                                    </t>
+                                <!--</t>-->
+                            </t>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td><strong>Sub-Total :</strong></td>
+                            <td class="text-right">
+                                <!-- <span t-esc="'%.0f'% due_total"/> -->
+                                <span t-esc="'{0:,.0f}'.format(int(due_total))"/>
+                            </td>
+                            <td class="text-right">
+                                <!-- <span t-esc="'%.0f'% total"/> -->
+                                <span t-esc="'{0:,.0f}'.format(int(total))"/>                                
+                            </td>
+                            <td class="text-right">
+                                <!-- <span t-esc="'%.0f'% paid_total"/> -->
+                                <span t-esc="'{0:,.0f}'.format(int(paid_total))"/>
+                            </td>
+                                    <td></td>
+                        </tr>
+                        <tr>
+                                    <td colspan="2"></td>
+                                    <td><strong>Balance :</strong></td>
+                                    <td></td>
+                                    <td class="text-right">
+                                        <!-- <span t-esc="'%.0f'% due_total"/> -->
+                                        <span t-esc="'{0:,.0f}'.format(int(due_total))"/>
+                                    </td>
+                                </tr>
+                        </table>
+                </t>
+					</div>
+
+
+
+            
+       
+        </t>
+				
+			
+		</template>
+
+		<template id="bi_report_overdue_due">
+			<t t-call="web.html_container">
+				<t t-foreach="docs" t-as="doc">
+					<t t-call="customer_account_payment_followup.bi_report_overdue_report" t-lang="doc.lang" />
+				</t>
+			</t>
+		</template>
+	</data>
+</odoo>
+
+

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <report
+            id="action_report_followup" 
+            model="account_followup.followup" 
+            string="Follow-up Report"
+            report_type="qweb-pdf"
+            name="customer_account_payment_followup.report_followup" 
+            file="customer_account_payment_followup.report_followup" 
+            menu="False"
+        />
+
+
+        <report
+            id="action_report_print_overdue" 
+            model="res.partner" 
+            string="Customer Overdue Statement"
+            report_type="qweb-pdf"
+            name="customer_account_payment_followup.bi_report_overdue_due" 
+            file="customer_account_payment_followup.bi_report_overdue_due" 
+            menu="False"
+        />
+    </data>
+</odoo>
